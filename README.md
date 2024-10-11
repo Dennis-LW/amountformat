@@ -5,7 +5,7 @@
 <input type="text" step="0.01" class="number-format" id="amount" name="amount" value="" >
 
 if (contractAmountInput) {
-		setupNumberFormatting(contractAmountInput);
+	setupNumberFormatting(contractAmountInput);
 }
 
 // To apply to multiple inputs

@@ -2,7 +2,7 @@
 
 ### Usage example
 ```
-<input type="text" step="0.01" class="number-format" id="amount" name="amount" value="" >
+<input type="text" class="number-format" id="amount" name="amount" value="" >
 
 if (contractAmountInput) {
 	setupNumberFormatting(contractAmountInput);

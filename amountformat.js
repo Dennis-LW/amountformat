@@ -1,7 +1,7 @@
 // Usage example:
-// const contractAmountInput = document.getElementById('amount');
-// if (amountInput) {
-//     setupNumberFormatting(amountInput);
+// const contractAmountInput = document.getElementById('contract_amount');
+// if (contractAmountInput) {
+//     setupNumberFormatting(contractAmountInput);
 // }
 
 // To apply to multiple inputs:
@@ -16,17 +16,17 @@ function setupNumberFormatting(inputElement) {
         
         if (decimalPart !== undefined) {
             decimalPart = decimalPart.slice(0, 2);
-            return `${integerPart}.${decimalPart}`;
+            return `$${integerPart}.${decimalPart}`;
         }
-        return integerPart;
+        return `$${integerPart}`;
     }
 
     function parseLocaleNumber(stringNumber) {
-        return parseFloat(stringNumber.replace(/,/g, ''));
+        return parseFloat(stringNumber.replace(/[$,]/g, ''));
     }
     
     function prepareForBackend() {
-        if (inputElement.value === '' || inputElement.value === '0') {
+        if (inputElement.value === '' || inputElement.value === '$0') {
             return '';
         }
         return parseLocaleNumber(inputElement.value).toFixed(2);
@@ -68,9 +68,9 @@ function setupNumberFormatting(inputElement) {
         this.value = formattedValue;
         
         if (isDeleting) {
-            let commasBeforeCursor = (originalValue.slice(0, cursorPos).match(/,/g) || []).length;
-            let newCommasBeforeCursor = (formattedValue.slice(0, cursorPos).match(/,/g) || []).length;
-            cursorPos -= (commasBeforeCursor - newCommasBeforeCursor);
+            let specialCharsBeforeCursor = (originalValue.slice(0, cursorPos).match(/[$,]/g) || []).length;
+            let newSpecialCharsBeforeCursor = (formattedValue.slice(0, cursorPos).match(/[$,]/g) || []).length;
+            cursorPos -= (specialCharsBeforeCursor - newSpecialCharsBeforeCursor);
         } else {
             let newLength = formattedValue.length;
             let cursorOffset = newLength - originalLength;
@@ -83,8 +83,8 @@ function setupNumberFormatting(inputElement) {
     });
 
     inputElement.addEventListener('blur', function() {
-        if (this.value === '' || this.value === '.') {
-            this.value = '0';
+        if (this.value === '' || this.value === '$' || this.value === '.') {
+            this.value = '$0';
         } else {
             let value = parseLocaleNumber(this.value);
             this.value = formatNumber(value.toFixed(2));
@@ -92,7 +92,7 @@ function setupNumberFormatting(inputElement) {
     });
 
     inputElement.addEventListener('focus', function() {
-        if (this.value === '0') {
+        if (this.value === '$0') {
             this.value = '';
         }
     });
@@ -101,6 +101,6 @@ function setupNumberFormatting(inputElement) {
     if (!inputElement.value) {
         inputElement.value = '';
     } else {
-        inputElement.value = formatNumber(inputElement.value.replace(/,/g, ''));
+        inputElement.value = formatNumber(inputElement.value.replace(/[$,]/g, ''));
     }
 }
